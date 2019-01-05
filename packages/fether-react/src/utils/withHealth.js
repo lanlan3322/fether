@@ -14,7 +14,8 @@ import {
   publishReplay,
   startWith,
   switchMap,
-  take
+  take,
+  tap
 } from 'rxjs/operators';
 import isElectron from 'is-electron';
 import isEqual from 'lodash/isEqual';
@@ -196,6 +197,61 @@ export default compose(
 
           // Syncing blocks
           if (!isSync) {
+            console.log('-------------------');
+            console.log('withHealth.js - DURING .map \n');
+            console.log('SYNCING with:');
+            console.log('  isParityRunning: ', isParityRunning);
+            console.log('  isApiConnected: ', isApiConnected);
+            console.log('  props.require (connected?): ', props.require);
+            console.log('  downloadProgress: ', downloadProgress);
+            console.log('  online: ', online);
+            console.log('  isClockSync: ', isClockSync);
+            console.log('  isSync: ', isSync);
+            console.log('  syncPayload: ', syncPayload);
+            console.log(
+              '    current block',
+              syncPayload && syncPayload.currentBlock.toString()
+            );
+            console.log(
+              '    highest block',
+              syncPayload && syncPayload.highestBlock.toString()
+            );
+            console.log(
+              '    percentage',
+              syncPayload && syncPayload.percentage.toString()
+            );
+            console.log(
+              '    starting block',
+              syncPayload && syncPayload.startingBlock.toString()
+            );
+            console.log('  props.health');
+            console.log('    sync status', props.health && props.health.status);
+            console.log(
+              '    current block',
+              props.health &&
+                props.health.payload &&
+                props.health.payload.currentBlock.toString()
+            );
+            console.log(
+              '    highest block',
+              props.health &&
+                props.health.payload &&
+                props.health.payload.highestBlock.toString()
+            );
+            console.log(
+              '    percentage',
+              props.health &&
+                props.health.payload &&
+                props.health.payload.percentage.toString()
+            );
+            console.log(
+              '    starting block',
+              props.health &&
+                props.health.payload &&
+                props.health.payload.startingBlock.toString()
+            );
+            console.log('  peerCount: ', peerCount.toString());
+
             return {
               ...props,
               health: {
@@ -204,6 +260,61 @@ export default compose(
               }
             };
           }
+
+          console.log('-------------------');
+          console.log('withHealth.js - DURING .map \n');
+          console.log('GOOD with:');
+          console.log('  isParityRunning: ', isParityRunning);
+          console.log('  isApiConnected: ', isApiConnected);
+          console.log('  props.require (connected?): ', props.require);
+          console.log('  downloadProgress: ', downloadProgress);
+          console.log('  online: ', online);
+          console.log('  isClockSync: ', isClockSync);
+          console.log('  isSync: ', isSync);
+          console.log('  syncPayload: ', syncPayload);
+          console.log(
+            '    current block',
+            syncPayload && syncPayload.currentBlock.toString()
+          );
+          console.log(
+            '    highest block',
+            syncPayload && syncPayload.highestBlock.toString()
+          );
+          console.log(
+            '    percentage',
+            syncPayload && syncPayload.percentage.toString()
+          );
+          console.log(
+            '    starting block',
+            syncPayload && syncPayload.startingBlock.toString()
+          );
+          console.log('  props.health');
+          console.log('    sync status', props.health && props.health.status);
+          console.log(
+            '    current block',
+            props.health &&
+              props.health.payload &&
+              props.health.payload.currentBlock.toString()
+          );
+          console.log(
+            '    highest block',
+            props.health &&
+              props.health.payload &&
+              props.health.payload.highestBlock.toString()
+          );
+          console.log(
+            '    percentage',
+            props.health &&
+              props.health.payload &&
+              props.health.payload.percentage.toString()
+          );
+          console.log(
+            '    starting block',
+            props.health &&
+              props.health.payload &&
+              props.health.payload.startingBlock.toString()
+          );
+          console.log('  peerCount: ', peerCount.toString());
 
           // Everything's OK
           return {
@@ -214,7 +325,12 @@ export default compose(
           };
         }
       ),
-      distinctUntilChanged(isEqual) // Perform deep comparison
+      tap(props => {
+        console.log('---------------');
+        console.log('withHeath.js - AFTER .map \n');
+        console.log('  props', props);
+      }),
+      distinctUntilChanged(isEqual) // Perform deep comparison,
     )
   )
 );
