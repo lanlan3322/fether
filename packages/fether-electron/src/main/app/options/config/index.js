@@ -26,6 +26,7 @@ const shouldUseDevTools = process.env.NODE_ENV !== 'production';
 
 // API docs: https://electronjs.org/docs/api/browser-window
 const DEFAULT_OPTIONS = {
+  backgroundColor: 'red', // Does not help
   frame: true,
   height: 640,
   index: INDEX_HTML_PATH,
@@ -49,6 +50,8 @@ const TASKBAR_OPTIONS = {
   hasShadow: true,
   height: 464,
   icon: ICON_PATH,
+  // opacity: 0.5, // Makes overall window transparent
+  // transparent: true, // Does not appear to do anything
   show: false, // Run showWindow later when taskbar has loaded in FetherApp
   showDockIcon: true,
   tooltip: 'Parity Fether',

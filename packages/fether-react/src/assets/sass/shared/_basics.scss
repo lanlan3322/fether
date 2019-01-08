@@ -1,5 +1,6 @@
 html {
   font-size: 16px;
+  background: transparent;
 }
 
 body {
@@ -14,6 +15,42 @@ body {
   font-size: ms(0);
   line-height: ms(0) * 1.3;
   overflow-y: hidden;
+  background: transparent;
+}
+
+.myarrow {
+  position: relative;
+  padding: 12px 0;
+}
+
+html {
+  box-sizing: border-box;
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+  background: transparent;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+  background: transparent;
+}
+
+.myarrow:before {
+  content: "";
+  height: 0;
+  width: 0;
+  border-width: 0 8px 12px 8px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.darwin.page {
+  border-radius: 5px;
+  box-shadow: 0 5px 24px rgba(0, 0, 0, 0.7);
 }
 
 .hidden {
