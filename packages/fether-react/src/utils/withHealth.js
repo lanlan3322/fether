@@ -14,7 +14,8 @@ import {
   publishReplay,
   startWith,
   switchMap,
-  take
+  take,
+  tap
 } from 'rxjs/operators';
 import isElectron from 'is-electron';
 import isEqual from 'lodash/isEqual';
@@ -76,7 +77,11 @@ const combined$ = combineLatest(
   downloadProgress$,
   online$,
   isClockSync$
-).pipe(publishReplay(1));
+).pipe(
+  tap(val => console.log('combined$: ', val)),
+  publishReplay(5)
+);
+
 combined$.connect();
 
 // Subscribe to the RPCs only once we set a provider
@@ -115,7 +120,10 @@ const rpcs$ = isApiConnected$.pipe(
         // be fired twice in a row.
         switchMap(sync => (sync.isSync ? of(sync) : of(sync).pipe(delay(2000))))
       ),
-      peerCount$().pipe(withoutLoading())
+      peerCount$().pipe(
+        tap(val => console.log('peerCount$(): ', val)),
+        withoutLoading()
+      )
     )
   ),
   startWith([{ isSync: false }, undefined]), // Don't stall the HOC's combineLatest; emit immediately
@@ -139,6 +147,13 @@ export default compose(
           ],
           [{ isSync, syncPayload }, peerCount]
         ]) => {
+          console.log('peerCount', peerCount);
+          console.log(
+            'downloadProgress',
+            downloadProgress,
+            'downloadProgress > 0 && !isParityRunning? ',
+            downloadProgress >= 0 && !isParityRunning
+          );
           // No connexion to the internet
           if (!online) {
             return {
@@ -150,7 +165,7 @@ export default compose(
           }
 
           // Parity is being downloaded
-          if (downloadProgress > 0 && !isParityRunning) {
+          if (downloadProgress >= 0 && !isParityRunning) {
             return {
               ...props,
               health: {
