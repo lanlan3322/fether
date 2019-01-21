@@ -77,10 +77,7 @@ const combined$ = combineLatest(
   downloadProgress$,
   online$,
   isClockSync$
-).pipe(
-  tap(val => console.log('combined$: ', val)),
-  publishReplay(5)
-);
+).pipe(publishReplay(1));
 
 combined$.connect();
 
@@ -121,8 +118,8 @@ const rpcs$ = isApiConnected$.pipe(
         switchMap(sync => (sync.isSync ? of(sync) : of(sync).pipe(delay(2000))))
       ),
       peerCount$().pipe(
-        tap(val => console.log('peerCount$(): ', val)),
-        withoutLoading()
+        withoutLoading(),
+        tap(val => console.log('peerCount$(): ', val))
       )
     )
   ),
@@ -130,6 +127,7 @@ const rpcs$ = isApiConnected$.pipe(
   publishReplay(1)
 );
 rpcs$.connect();
+rpcs$.subscribe(val => console.log('rpc$: ', val));
 
 // Inject node health information as health.{status, payload} props
 export default compose(
@@ -148,12 +146,12 @@ export default compose(
           [{ isSync, syncPayload }, peerCount]
         ]) => {
           console.log('peerCount', peerCount);
+          console.log('isSync: ', isSync);
           console.log(
-            'downloadProgress',
-            downloadProgress,
-            'downloadProgress > 0 && !isParityRunning? ',
-            downloadProgress >= 0 && !isParityRunning
+            'syncPayload.percentage: ',
+            syncPayload && syncPayload.percentage
           );
+
           // No connexion to the internet
           if (!online) {
             return {
