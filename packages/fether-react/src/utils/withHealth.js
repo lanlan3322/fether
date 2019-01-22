@@ -169,7 +169,7 @@ export default compose(
           }
 
           // Parity is being downloaded
-          if (downloadProgress >= 0 && !isParityRunning) {
+          if (downloadProgress > 0 && !isParityRunning) {
             return {
               ...props,
               health: {
