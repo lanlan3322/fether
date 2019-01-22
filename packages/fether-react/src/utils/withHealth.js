@@ -128,8 +128,8 @@ const rpcs$ = isApiConnected$.pipe(
             sync.isSync
               ? of(sync)
               : of(sync).pipe(
-                tap(console.log('not sync.. delay')),
-                delay(2000)
+                tap(console.log('not synced.. delay')),
+                delay(3000)
               )
         )
       ),
@@ -158,13 +158,6 @@ export default compose(
           ],
           [{ isSync, syncPayload }, peerCount]
         ]) => {
-          console.log('peerCount', parseInt(peerCount));
-          console.log('isSync: ', isSync);
-          console.log(
-            'syncPayload.percentage: ',
-            syncPayload && parseInt(syncPayload.percentage)
-          );
-
           // No connexion to the internet
           if (!online) {
             return {
