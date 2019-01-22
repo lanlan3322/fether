@@ -84,10 +84,18 @@ combined$.connect();
 // Subscribe to the RPCs only once we set a provider
 const rpcs$ = isApiConnected$.pipe(
   filter(isApiConnected => isApiConnected),
-  take(1),
+  //  take(1), //really needed if isApiConnected is distinctUntilChanged ?
   switchMap(() =>
     combineLatest(
       syncStatus$().pipe(
+        tap(syncStatus =>
+          console.log(
+            'syncStatus.currentBlock: ',
+            parseInt(syncStatus.currentBlock),
+            ' syncStatus.highestBlock: ',
+            parseInt(syncStatus.highestBlock)
+          )
+        ),
         map(syncStatus => {
           if (!syncStatus) {
             return {
@@ -115,12 +123,17 @@ const rpcs$ = isApiConnected$.pipe(
         // as syncing to new blocks from the top of the chain usually takes ~1s.
         // syncStatus$() is distinctUntilChanged, so {isSync: false} will never
         // be fired twice in a row.
-        switchMap(sync => (sync.isSync ? of(sync) : of(sync).pipe(delay(2000))))
+        switchMap(
+          sync =>
+            sync.isSync
+              ? of(sync)
+              : of(sync).pipe(
+                tap(console.log('not sync.. delay')),
+                delay(2000)
+              )
+        )
       ),
-      peerCount$().pipe(
-        withoutLoading(),
-        tap(val => console.log('peerCount$(): ', val))
-      )
+      peerCount$().pipe(withoutLoading())
     )
   ),
   startWith([{ isSync: false }, undefined]), // Don't stall the HOC's combineLatest; emit immediately
@@ -145,11 +158,11 @@ export default compose(
           ],
           [{ isSync, syncPayload }, peerCount]
         ]) => {
-          console.log('peerCount', peerCount);
+          console.log('peerCount', parseInt(peerCount));
           console.log('isSync: ', isSync);
           console.log(
             'syncPayload.percentage: ',
-            syncPayload && syncPayload.percentage
+            syncPayload && parseInt(syncPayload.percentage)
           );
 
           // No connexion to the internet
