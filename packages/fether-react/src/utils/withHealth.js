@@ -84,7 +84,7 @@ combined$.connect();
 // Subscribe to the RPCs only once we set a provider
 const rpcs$ = isApiConnected$.pipe(
   filter(isApiConnected => isApiConnected),
-  //  take(1), //really needed if isApiConnected is distinctUntilChanged ?
+  take(1), // really needed if isApiConnected is distinctUntilChanged ?
   switchMap(() =>
     combineLatest(
       syncStatus$().pipe(
