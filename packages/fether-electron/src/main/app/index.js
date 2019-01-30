@@ -8,7 +8,11 @@ import electron, { screen, Tray } from 'electron';
 import Positioner from 'electron-positioner';
 import events from 'events';
 import debounce from 'lodash/debounce';
+import path from 'path';
+import url from 'url';
+import staticPath from './utils/staticPath';
 
+import { iconPath } from '../../../icon';
 import { productName } from '../../../electron-builder.json';
 import Pino from './utils/pino';
 import { getScreenResolution, shouldFixWindowPosition } from './utils/window';
@@ -85,7 +89,14 @@ class FetherApp {
   createTray = () => {
     let { options } = this.fetherApp;
 
-    this.fetherApp.tray = new Tray(options.icon);
+    const myIconPath = url.format({
+      pathname: path.join(staticPath, 'assets', 'icon.png'),
+      protocol: 'file:',
+      slashes: true
+    });
+
+    this.fetherApp.tray = new Tray(myIconPath);
+    // new Tray(path.join(__dirname, 'build', 'icon.png')); // new Tray(iconPath) // new Tray(options.icon);
   };
 
   showTrayBalloon = () => {

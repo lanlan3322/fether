@@ -7,6 +7,7 @@ import path from 'path';
 import url from 'url';
 
 import staticPath from '../../utils/staticPath';
+import { iconPath } from '../../../../../icon';
 
 const INDEX_HTML_PATH =
   process.env.ELECTRON_START_URL ||
@@ -23,7 +24,9 @@ let ICON_PATH =
     : path.join(__dirname, 'icons', 'parity-ethereum-fether-icon.png');
 
 if (process.env.NODE_ENV === 'production') {
-  ICON_PATH = path.join(__dirname, '../Parity Fether.icns');
+  // ICON_PATH = path.join(__dirname, '../Parity Fether.icns');
+  // ICON_PATH = path.join(__dirname, 'build/icon.png');
+  ICON_PATH = iconPath;
 }
 
 const shouldUseDevTools = process.env.NODE_ENV !== 'production';
@@ -36,7 +39,7 @@ const DEFAULT_OPTIONS = {
   alwaysOnTop: true,
   frame: true,
   height: 640,
-  icon: ICON_PATH,
+  // icon: ICON_PATH,
   index: INDEX_HTML_PATH,
   resizable: false,
   show: false,
